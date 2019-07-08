@@ -3,6 +3,8 @@ package com.bytedance.camera.demo;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.hardware.Camera;
 import android.media.CamcorderProfile;
 import android.media.MediaRecorder;
@@ -21,6 +23,8 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
+
+import com.bytedance.camera.demo.utils.Utils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -45,6 +49,7 @@ public class CustomCameraActivity extends AppCompatActivity {
     private int rotationDegree = 0;
     private int cameraId = 0;
     private Timer timer;
+    private String path = new String();
     private Camera.AutoFocusCallback myAutoFocusCallback = null;
 
     @Override
@@ -275,6 +280,8 @@ public class CustomCameraActivity extends AppCompatActivity {
 
     private Camera.PictureCallback mPicture = (data, camera) -> {
         File pictureFile = getOutputMediaFile(MEDIA_TYPE_IMAGE);
+        path = pictureFile.getAbsolutePath();
+        System.out.println(pictureFile);
         if (pictureFile == null) {
             return;
         }
@@ -285,7 +292,9 @@ public class CustomCameraActivity extends AppCompatActivity {
         } catch (IOException e) {
             Log.d("mPicture", "Error accessing file: " + e.getMessage());
         }
-
+        Intent intent = new Intent(CustomCameraActivity.this, EmptyActivity.class);
+        intent.putExtra("path",path);
+        startActivity(intent);
         mCamera.startPreview();
     };
 
@@ -370,4 +379,5 @@ public class CustomCameraActivity extends AppCompatActivity {
         super.onUserLeaveHint();
         timer.cancel();
     }
+
 }
